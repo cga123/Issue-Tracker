@@ -230,25 +230,14 @@ suite('Functional Tests', function() {
       });
   });
   
-  test('Delete an issue: DELETE request to /api/issues/{project}', function(done) {
+  test('Delete an issue with missing _id: DELETE request to /api/issues/{project}', function(done) {
     chai.request(server)
-      .post('/api/issues/apitest')
-      .send({
-        issue_title: 'Title',
-        issue_text: 'text',
-        created_by: 'Functional Test - Delete',
-      })
+      .delete('/api/issues/apitest')
+      .send({})
       .end(function(err, res){
-        const deleteId = res.body._id;
-        chai.request(server)
-          .delete('/api/issues/apitest')
-          .send({ _id: deleteId })
-          .end(function(err, res){
-            assert.equal(res.status, 200);
-            assert.equal(res.body.result, 'successfully deleted');
-            assert.equal(res.body._id, deleteId);
-            done();
-          });
+        assert.equal(res.status, 200);
+        assert.equal(res.body.error, 'missing _id');
+        done();
       });
   });
 
